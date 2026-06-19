@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wizard CashFlow</title>
+    <meta name="description" content="Sistema de gestão financeira Wizard CashFlow — controle de alunos, mensalidades e despesas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="app">
+
+        <!-- ==========================================
+             TELA DE LOGIN
+             ========================================== -->
+        <div id="login-screen" class="screen">
+            <div class="login-split">
+
+                <!-- Painel esquerdo: identidade visual -->
+                <div class="login-brand-panel">
+                    <div class="login-brand-content">
+                        <img src="./assets/imagens/logo.png" alt="Wizard Logo" class="login-brand-logo">
+                        <h1 class="login-brand-title">Wizard</h1>
+                        <p class="login-brand-subtitle">CashFlow</p>
+                        <p class="login-brand-desc">Gestão financeira inteligente para sua escola de idiomas.</p>
+                    </div>
+                    <div class="login-brand-footer">
+                        <span>© 2026 Wizard — Todos os direitos reservados</span>
+                    </div>
+                </div>
+
+                <!-- Painel direito: formulário -->
+                <div class="login-form-panel">
+                    <div class="login-form-wrapper">
+                        <div class="login-form-header">
+                            <h2 class="login-form-title">Bem-vindo de volta</h2>
+                            <p class="login-form-subtitle">Acesse o painel financeiro</p>
+                        </div>
+                        <div id="login-error" class="error-message"></div>
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label class="form-label" for="username">Usuário</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i data-lucide="user"></i></span>
+                                    <input type="text" id="username" class="form-input"
+                                           placeholder="Digite seu usuário" required autocomplete="username">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="password">Senha</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon"><i data-lucide="lock"></i></span>
+                                    <input type="password" id="password" class="form-input"
+                                           placeholder="Digite sua senha" required autocomplete="current-password">
+                                </div>
+                            </div>
+                            <button type="submit" id="login-btn" class="login-btn">Entrar</button>
+                        </form>
+                        <p class="hint">Para o primeiro acesso, coloque os dados de login enviados pelo suporte. Caso não tenha acesso, entre em contato com o mesmo.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================
+             APLICAÇÃO PRINCIPAL
+             ========================================== -->
+        <div id="main-app" class="screen hidden">
+
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <img src="./assets/imagens/logo.png" alt="Wizard Logo">
+                    Wizard CashFlow
+                </div>
+                <div class="navbar-links">
+                    <span class="navbar-link active" data-page="dashboard">
+                        <span class="navbar-link-icon"><i data-lucide="layout-dashboard"></i></span>Dashboard
+                    </span>
+                    <span class="navbar-link" data-page="students">
+                        <span class="navbar-link-icon"><i data-lucide="graduation-cap"></i></span>Alunos
+                    </span>
+                    <span class="navbar-link" data-page="fees">
+                        <span class="navbar-link-icon"><i data-lucide="receipt"></i></span>Mensalidades
+                    </span>
+                    <span class="navbar-link" data-page="expenses">
+                        <span class="navbar-link-icon"><i data-lucide="credit-card"></i></span>Despesas
+                    </span>
+                    <span class="navbar-link" data-page="cashflow">
+                        <span class="navbar-link-icon"><i data-lucide="arrow-left-right"></i></span>Fluxo de Caixa
+                    </span>
+                    <span class="navbar-link" data-page="reports">
+                        <span class="navbar-link-icon"><i data-lucide="file-text"></i></span>Relatórios
+                    </span>
+                    <span class="navbar-link" data-page="backup">
+                        <span class="navbar-link-icon"><i data-lucide="database-backup"></i></span>Backup
+                    </span>
+                    <span class="navbar-link" id="logout">
+                        <span class="navbar-link-icon"><i data-lucide="log-out"></i></span>Sair
+                    </span>
+                </div>
+            </nav>
+
+            <div class="container">
+
+                <!-- ======================================
+                     DASHBOARD
+                     ====================================== -->
+                <div id="dashboard-page" class="page active">
+                    <div class="page-header dashboard-header">
+                        <div class="page-header-title-container">
+                            <img src="./assets/imagens/logo.png" alt="Wizard Logo" class="page-header-logo">
+                            <div class="page-header-text">
+                                <h1>Dashboard Financeiro</h1>
+                                <p>Visão geral da situação financeira da unidade</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid Principal - Destaques Financeiros -->
+                    <div class="dashboard-grid-main">
+                        <!-- Card de Saldo Atual - Destaque Máximo -->
+                        <div class="dashboard-card balance-card">
+                            <div class="dashboard-card-icon"><i data-lucide="wallet"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Saldo Atual</span>
+                                <h2 class="dashboard-card-value" id="balance">R$ 0,00</h2>
+                                <span class="dashboard-card-desc">Resultado acumulado consolidado</span>
+                            </div>
+                        </div>
+
+                        <!-- Receitas do Mês -->
+                        <div class="dashboard-card income-card">
+                            <div class="dashboard-card-icon"><i data-lucide="trending-up"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Receitas do Mês</span>
+                                <h2 class="dashboard-card-value positive" id="total-revenue">R$ 0,00</h2>
+                                <span class="dashboard-card-desc">Mensalidades confirmadas</span>
+                            </div>
+                        </div>
+
+                        <!-- Despesas do Mês -->
+                        <div class="dashboard-card expense-card">
+                            <div class="dashboard-card-icon"><i data-lucide="trending-down"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Despesas do Mês</span>
+                                <h2 class="dashboard-card-value negative" id="total-expenses">R$ 0,00</h2>
+                                <span class="dashboard-card-desc">Despesas registradas</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid Secundário - Métricas e Indicadores -->
+                    <div class="dashboard-grid-secondary">
+                        <!-- Mensalidades em Atraso (Novidade dinâmica) -->
+                        <div class="dashboard-card overdue-card">
+                            <div class="dashboard-card-icon"><i data-lucide="alert-triangle"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Mensalidades em Atraso</span>
+                                <h2 class="dashboard-card-value negative" id="overdue-revenue">R$ 0,00</h2>
+                                <span class="dashboard-card-desc" id="overdue-fees-count">0 mensalidades vencidas</span>
+                            </div>
+                        </div>
+
+                        <!-- Receita Pendente -->
+                        <div class="dashboard-card pending-card">
+                            <div class="dashboard-card-icon"><i data-lucide="clock"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Receita Pendente</span>
+                                <h2 class="dashboard-card-value amber" id="pending-revenue">R$ 0,00</h2>
+                                <span class="dashboard-card-desc" id="pending-fees-count-text">0 parcelas a vencer</span>
+                            </div>
+                        </div>
+
+                        <!-- Total de Alunos -->
+                        <div class="dashboard-card info-card">
+                            <div class="dashboard-card-icon"><i data-lucide="users"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Total de Alunos</span>
+                                <h2 class="dashboard-card-value" id="total-students">0</h2>
+                                <span class="dashboard-card-desc">Alunos ativos no sistema</span>
+                            </div>
+                        </div>
+
+                        <!-- Mensalidades Pagas (Contador) -->
+                        <div class="dashboard-card count-card">
+                            <div class="dashboard-card-icon"><i data-lucide="check-circle-2"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Mensalidades Pagas</span>
+                                <h2 class="dashboard-card-value" id="paid-fees-count">0</h2>
+                                <span class="dashboard-card-desc">Quitações confirmadas</span>
+                            </div>
+                        </div>
+
+                        <!-- Mensalidades Pendentes (Contador) -->
+                        <div class="dashboard-card count-card">
+                            <div class="dashboard-card-icon"><i data-lucide="bell"></i></div>
+                            <div class="dashboard-card-info">
+                                <span class="dashboard-card-title">Parcelas Pendentes</span>
+                                <h2 class="dashboard-card-value" id="pending-fees-count">0</h2>
+                                <span class="dashboard-card-desc">Aguardando pagamento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     ALUNOS
+                     ====================================== -->
+                <div id="students-page" class="page">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>Alunos</h1>
+                            <p>Cadastro e gerenciamento de alunos</p>
+                        </div>
+                        <div class="page-header-actions">
+                            <button class="button button-secondary" id="import-students-btn" title="Importar alunos via planilha .xlsx">
+                                <i data-lucide="upload"></i> Importar Planilha
+                            </button>
+                            <button class="button button-secondary" id="export-students-btn" title="Exportar lista de alunos para Excel">
+                                <i data-lucide="download"></i> Exportar Excel
+                            </button>
+                            <button class="button button-primary" id="new-student-btn">
+                                <i data-lucide="user-plus"></i> Novo Aluno
+                            </button>
+                        </div>
+                        <!-- Input de arquivo oculto para importação -->
+                        <input type="file" id="import-file-input" accept=".xlsx,.xls" style="display:none;">
+                    </div>
+                    
+                    <!-- Barra de busca e ordenação de alunos -->
+                    <div class="table-toolbar">
+                        <div class="search-wrapper">
+                            <span class="search-icon"><i data-lucide="search"></i></span>
+                            <input type="text" id="student-search" class="form-input" placeholder="Buscar aluno por nome, telefone, e-mail ou CPF...">
+                        </div>
+                        <div class="sort-wrapper">
+                            <select id="student-sort" class="input">
+                                <option value="name-asc">Nome (A-Z)</option>
+                                <option value="name-desc">Nome (Z-A)</option>
+                                <option value="id-desc">Mais Recentes</option>
+                                <option value="id-asc">Mais Antigos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>CPF</th>
+                                    <th>E-mail</th>
+                                    <th>Endereço</th>
+                                    <th style="text-align:right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table">
+                                <tr>
+                                    <td colspan="6" style="text-align:center; color:var(--gray-400); padding:40px 16px;">
+                                        Nenhum aluno cadastrado ainda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     MENSALIDADES
+                     ====================================== -->
+                <div id="fees-page" class="page">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>Mensalidades</h1>
+                            <p>Controle de cobranças e recebimentos</p>
+                        </div>
+                        <div class="page-header-actions">
+                            <button class="button button-secondary" id="export-fees-btn" title="Exportar mensalidades para Excel">
+                                <i data-lucide="download"></i> Exportar Excel
+                            </button>
+                            <button class="button button-primary" id="new-fee-btn">
+                                <i data-lucide="plus-circle"></i> Nova Mensalidade
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filtros de Mensalidades -->
+                    <div class="table-toolbar flex-wrap">
+                        <div class="search-wrapper" style="flex: 2; min-width: 200px;">
+                            <span class="search-icon"><i data-lucide="search"></i></span>
+                            <input type="text" id="fee-search" class="form-input" placeholder="Buscar por nome do aluno ou ID...">
+                        </div>
+                        <div class="filter-wrapper" style="flex: 1; min-width: 140px;">
+                            <select id="fee-status-filter" class="input">
+                                <option value="all">Todos os Status</option>
+                                <option value="paid">Paga</option>
+                                <option value="pending">Pendente</option>
+                                <option value="overdue">Atrasada</option>
+                            </select>
+                        </div>
+                        <div class="date-range-wrapper" style="display: flex; gap: 8px; align-items: center; min-width: 320px;">
+                            <span class="label" style="margin-bottom: 0; white-space: nowrap; font-size: 12px; color: var(--gray-500);">Vencimento:</span>
+                            <input type="date" id="fee-start-date" class="input" style="padding: 8px 10px; font-size: 13px;">
+                            <span style="font-size: 13px; color: var(--gray-400);">a</span>
+                            <input type="date" id="fee-end-date" class="input" style="padding: 8px 10px; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Aluno</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Pagamento</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fees-table">
+                                <tr>
+                                    <td colspan="6" style="text-align:center; color:var(--gray-400); padding:40px 16px;">
+                                        Nenhuma mensalidade cadastrada ainda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     DESPESAS
+                     ====================================== -->
+                <div id="expenses-page" class="page">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>Despesas</h1>
+                            <p>Registro e acompanhamento de custos operacionais</p>
+                        </div>
+                        <div class="page-header-actions">
+                            <button class="button button-secondary" id="export-expenses-btn" title="Exportar despesas para Excel">
+                                <i data-lucide="download"></i> Exportar Excel
+                            </button>
+                            <button class="button button-primary" id="new-expense-btn">
+                                <i data-lucide="plus-circle"></i> Nova Despesa
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Categoria</th>
+                                    <th>Data</th>
+                                    <th style="text-align:right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-table">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; color:var(--gray-400); padding:40px 16px;">
+                                        Nenhuma despesa cadastrada ainda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     FLUXO DE CAIXA
+                     ====================================== -->
+                <div id="cashflow-page" class="page">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>Fluxo de Caixa</h1>
+                            <p>Movimentações financeiras consolidadas</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card highlight">
+                            <div class="dashboard-card-icon"><i data-lucide="arrow-down-circle"></i></div>
+                            <div class="dashboard-card-title">Total de Receitas</div>
+                            <div class="dashboard-card-value positive" id="cf-total-income">R$ 0,00</div>
+                            <div class="dashboard-card-desc">Entradas confirmadas</div>
+                        </div>
+                        <div class="dashboard-card warning">
+                            <div class="dashboard-card-icon"><i data-lucide="arrow-up-circle"></i></div>
+                            <div class="dashboard-card-title">Total de Despesas</div>
+                            <div class="dashboard-card-value negative" id="cf-total-expense">R$ 0,00</div>
+                            <div class="dashboard-card-desc">Saídas registradas</div>
+                        </div>
+                        <div class="dashboard-card highlight">
+                            <div class="dashboard-card-icon"><i data-lucide="scale"></i></div>
+                            <div class="dashboard-card-title">Saldo</div>
+                            <div class="dashboard-card-value" id="cf-balance">R$ 0,00</div>
+                            <div class="dashboard-card-desc">Resultado acumulado</div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros do Fluxo de Caixa -->
+                    <div class="table-toolbar flex-wrap">
+                        <div class="filter-wrapper" style="flex: 1; min-width: 150px;">
+                            <select id="cf-type-filter" class="input">
+                                <option value="all">Todos os Tipos</option>
+                                <option value="income">Receitas (Entradas)</option>
+                                <option value="expense">Despesas (Saídas)</option>
+                            </select>
+                        </div>
+                        <div class="filter-wrapper" style="flex: 1; min-width: 180px;">
+                            <select id="cf-category-filter" class="input">
+                                <option value="all">Todas as Categorias</option>
+                                <option value="Mensalidade">Mensalidades</option>
+                                <option value="Aluguel">Aluguel</option>
+                                <option value="Salários">Salários</option>
+                                <option value="Material">Material</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="date-range-wrapper" style="display: flex; gap: 8px; align-items: center; min-width: 320px;">
+                            <span class="label" style="margin-bottom: 0; white-space: nowrap; font-size: 12px; color: var(--gray-500);">Período:</span>
+                            <input type="date" id="cf-start-date" class="input" style="padding: 8px 10px; font-size: 13px;">
+                            <span style="font-size: 13px; color: var(--gray-400);">a</span>
+                            <input type="date" id="cf-end-date" class="input" style="padding: 8px 10px; font-size: 13px;">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cashflow-table">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; color:var(--gray-400); padding:40px 16px;">
+                                        Nenhuma movimentação encontrada.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     BACKUP
+                     ====================================== -->
+                <div id="backup-page" class="page">
+                    <div class="page-header">
+                        <div class="page-header-text">
+                            <h1>Backup</h1>
+                            <p>Segurança e integridade dos dados</p>
+                        </div>
+                    </div>
+
+                    <!-- Card de ação principal -->
+                    <div class="card">
+                        <div class="backup-hero">
+                            <div class="backup-hero-icon"><i data-lucide="hard-drive-download"></i></div>
+                            <h2 class="backup-hero-title">Backup do Banco de Dados</h2>
+                            <p class="backup-hero-desc">
+                                Crie uma cópia de segurança completa do banco de dados SQLite.
+                                O arquivo será salvo automaticamente com data e hora.
+                            </p>
+                            <div class="backup-action">
+                                <button class="button button-primary" id="backup-btn">
+                                    <i data-lucide="database-backup"></i> Realizar Backup Agora
+                                </button>
+                                <div id="backup-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card informativo -->
+                    <div class="card backup-info-card">
+                        <h3><i data-lucide="info"></i> Sobre os backups</h3>
+                        <ul class="backup-info-list">
+                            <li>Os arquivos são salvos automaticamente com timestamp no nome</li>
+                            <li>Formato: <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-size:12px;">wizard-backup-YYYY-MM-DDTHH-mm-ss-sssZ.db</code></li>
+                            <li>Recomenda-se realizar backup antes de qualquer alteração importante</li>
+                            <li>Para restaurar: selecione um backup na lista abaixo ou substitua manualmente o arquivo <code style="background:var(--gray-100);padding:2px 6px;border-radius:4px;font-size:12px;">prisma/wizard.db</code></li>
+                        </ul>
+                    </div>
+
+                    <!-- Listagem de backups disponíveis (mostrado dinamicamente) -->
+                    <div class="card hidden" id="backups-list-card">
+                        <div class="card-header-with-actions">
+                            <h3><i data-lucide="folder-open"></i> Backups Disponíveis</h3>
+                            <button class="button button-secondary" id="open-backups-folder-btn" style="padding: 6px 12px; font-size: 12px;">
+                                <i data-lucide="folder"></i> Abrir Pasta de Backups
+                            </button>
+                        </div>
+                        <div style="margin-top: 18px; overflow-x: auto;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome do Arquivo</th>
+                                        <th>Data de Criação</th>
+                                        <th>Tamanho</th>
+                                        <th style="text-align:right">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="backups-table-body">
+                                    <tr>
+                                        <td colspan="4" style="text-align:center; color:var(--gray-400); padding:20px 16px;">
+                                            Carregando backups...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======================================
+                     RELATÓRIOS
+                     ====================================== -->
+                <div id="reports-page" class="page">
+                    <div class="page-header">
+                        <h1><i data-lucide="file-text"></i> Relatórios</h1>
+                        <p>Gerencie e imprima relatórios financeiros</p>
+                    </div>
+
+                    <!-- Filtros do Relatório -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div class="card-header">
+                            <h3><i data-lucide="filter"></i> Filtros do Relatório</h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                                <div class="form-group">
+                                    <label class="label" for="report-type">Tipo de Relatório</label>
+                                    <select id="report-type" class="input">
+                                        <option value="students">Relatório de Alunos</option>
+                                        <option value="fees">Relatório de Mensalidades</option>
+                                        <option value="cashflow">Relatório de Fluxo de Caixa</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="label" for="report-start-date">Data Inicial</label>
+                                    <input type="date" id="report-start-date" class="input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="label" for="report-end-date">Data Final</label>
+                                    <input type="date" id="report-end-date" class="input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="label" for="report-status">Status</label>
+                                    <select id="report-status" class="input">
+                                        <option value="all">Todos</option>
+                                        <option value="paid">Pagas</option>
+                                        <option value="pending">Pendentes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top: 16px;">
+                                <button class="button button-primary" id="generate-report-btn"><i data-lucide="bar-chart-2"></i> Gerar Relatório</button>
+                                <button class="button button-secondary" id="print-report-btn" style="margin-left: 8px;"><i data-lucide="printer"></i> Imprimir / PDF</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview do Relatório -->
+                    <div class="card" id="report-preview-card">
+                        <div class="card-header">
+                            <h3><i data-lucide="file"></i> Pré-visualização do Relatório</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="report-content" style="padding: 20px;">
+                                <p style="text-align: center; color: var(--gray-400);">Selecione os filtros e clique em "Gerar Relatório" para visualizar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /container -->
+        </div><!-- /main-app -->
+
+        <!-- ==========================================
+             MODAL GLOBAL
+             ========================================== -->
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Modal</h3>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             MODAL DE CONFIRMAÇÃO DE SEGURANÇA
+             ========================================== -->
+        <div id="confirm-modal" class="modal hidden">
+            <div class="modal-content confirm-modal-content">
+                <div class="modal-header">
+                    <h3 id="confirm-modal-title">Confirmar Ação</h3>
+                    <button class="modal-close" id="confirm-modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirm-modal-text">Tem certeza que deseja prosseguir com esta ação?</p>
+                    <div class="confirm-modal-actions">
+                        <button class="button button-secondary" id="confirm-modal-cancel">Cancelar</button>
+                        <button class="button button-danger" id="confirm-modal-ok">Confirmar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             MODAL DE PRIMEIRO ACESSO (TROCA OBRIGATÓRIA DE SENHA)
+             ========================================== -->
+        <div id="first-access-screen" class="modal hidden" style="z-index: 2000;">
+            <div class="modal-content" style="max-width: 450px;">
+                <div class="modal-header" style="border-bottom: 2px solid var(--wizard-red);">
+                    <h3 id="first-access-title">🔒 Alteração de Credenciais</h3>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-bottom: 20px; font-size: 14px; color: var(--gray-600); line-height: 1.5;">
+                        Você fez login com o usuário padrão (<strong>admin</strong>). Por motivos de segurança, é <strong>obrigatório</strong> definir um novo nome de usuário e uma senha segura antes de acessar o sistema.
+                    </p>
+                    <div id="first-access-error" class="error-message"></div>
+                    <form id="first-access-form">
+                        <div class="form-group">
+                            <label class="label" for="new-username">Novo Nome de Usuário *</label>
+                            <input type="text" id="new-username" class="input" placeholder="Ex: lucas_wizard" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label class="label" for="new-password">Nova Senha *</label>
+                            <input type="password" id="new-password" class="input" placeholder="Nova senha (mínimo 6 caracteres)" required autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label class="label" for="confirm-new-password">Confirmar Nova Senha *</label>
+                            <input type="password" id="confirm-new-password" class="input" placeholder="Confirme a nova senha" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" id="first-access-btn" class="button button-primary" style="width: 100%; margin-top: 10px;">
+                            <i data-lucide="save"></i> Salvar e Acessar o Sistema
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             MODAL DE PRÉ-VISUALIZAÇÃO DE IMPORTAÇÃO
+             ========================================== -->
+        <div id="import-preview-modal" class="modal hidden">
+            <div class="modal-content" style="max-width: 800px; width: 95%;">
+                <div class="modal-header">
+                    <h3 id="import-preview-title"><i data-lucide="upload"></i> Pré-visualização da Importação</h3>
+                    <button class="modal-close" id="import-preview-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="import-preview-summary" style="margin-bottom: 16px; padding: 12px 16px; border-radius: 8px; background: var(--gray-50); border: 1px solid var(--gray-200); font-size: 13px; line-height: 1.7;"></div>
+                    <div style="overflow-x: auto; max-height: 350px; overflow-y: auto;">
+                        <table class="table" id="import-preview-table">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>CPF</th>
+                                    <th>E-mail</th>
+                                    <th>Endereço</th>
+                                </tr>
+                            </thead>
+                            <tbody id="import-preview-tbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="confirm-modal-actions" style="margin-top: 20px;">
+                        <button class="button button-secondary" id="import-preview-cancel">Cancelar</button>
+                        <button class="button button-primary" id="import-preview-confirm"><i data-lucide="check-circle"></i> Confirmar Importação</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container de Notificações Toast -->
+        <div id="toast-container"></div>
+
+    </div><!-- /app -->
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize Lucide icons after DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>

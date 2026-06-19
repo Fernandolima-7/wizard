@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+ datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Student {
+  id          Int      @id @default(autoincrement())
+  name        String
+  phone       String?
+  cpf         String?
+  email       String?
+  address     String?
+  createdAt   DateTime @default(now())
+  fees        Fee[]
+}
+
+model Fee {
+  id          Int      @id @default(autoincrement())
+  studentId   Int
+  student     Student   @relation(fields: [studentId], references: [id])
+  amount      Float
+  dueDate     DateTime
+  paidDate    DateTime?
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  description String
+  amount      Float
+  category    String
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
