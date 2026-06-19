@@ -40,7 +40,7 @@ Sistema desktop de fluxo de caixa para escola de inglês Wizard, desenvolvido co
 
 ## Execução
 
-### Modo Produção (Electron)
+### Modo Desenvolvimento (Electron)
 
 Para executar o aplicativo desktop:
 ```bash
@@ -51,8 +51,8 @@ O sistema iniciará automaticamente o servidor backend e abrirá a interface des
 
 ## Credenciais Padrão
 
-- **Usuário**: admin
-- **Senha**: admin123
+- **Usuário**: wizard
+- **Senha**: wizard
 
 ## Estrutura do Projeto
 
